@@ -17,7 +17,8 @@ function prepare_knative_serving_tests {
   # Create test resources (namespaces, configMaps, secrets)
   oc apply -f test/config
   # Adding scc for anyuid to test TestShouldRunAsUserContainerDefault.
-  oc adm policy add-scc-to-user anyuid -z default -n serving-tests
+  oc adm policy add-scc-to-user anyuid -z default -n 
+  
   # Add networkpolicy to test namespace and label to serving namespaces for testing under the strict networkpolicy.
   add_networkpolicy "serving-tests"
   add_networkpolicy "serving-tests-alt"
@@ -58,7 +59,7 @@ function upstream_knative_serving_e2e_and_conformance_tests {
   oc tag -n serving-tests "registry.ci.openshift.org/openshift/knative-${KNATIVE_SERVING_VERSION}:knative-serving-test-helloworld" "helloworld:latest" --reference-policy=local
   SYSTEM_NAMESPACE=knative-serving go_test_e2e -tags=e2e -timeout=30m ./test/e2e -run "^(TestHelloWorld)$" \
     --resolvabledomain --kubeconfig "$KUBECONFIG" \
-    --imagetemplate "image-registry.openshift-image-registry.svc:5000/serving-tests/{{.Name}}"
+    --imagetemplate "image-registry.openshift-image-registry.svc:5000/local-images/{{.Name}}"
   
   # Prevent HPA from scaling to make HA tests more stable
   local max_replicas min_replicas
