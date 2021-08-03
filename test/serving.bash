@@ -59,7 +59,7 @@ function upstream_knative_serving_e2e_and_conformance_tests {
   oc tag -n serving-tests "registry.ci.openshift.org/openshift/knative-${KNATIVE_SERVING_VERSION}:knative-serving-test-helloworld" "helloworld:latest" --reference-policy=local
   SYSTEM_NAMESPACE=knative-serving go_test_e2e -tags=e2e -timeout=30m ./test/e2e -run "^(TestHelloWorld)$" \
     --resolvabledomain --kubeconfig "$KUBECONFIG" \
-    --imagetemplate "image-registry.openshift-image-registry.svc:5000/local-images/{{.Name}}"
+    --imagetemplate "image-registry.openshift-image-registry.svc:5000/serving-tests/{{.Name}}"
   
   # Prevent HPA from scaling to make HA tests more stable
   local max_replicas min_replicas
